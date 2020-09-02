@@ -21,7 +21,7 @@ def series():
     print("Convert Pandas Series to Python list")
     print(ds.tolist())
     print(type(ds.tolist()))
-
+# series()
 
 def calculateSeries():
     ds1 = pd.Series([2, 4, 6, 8, 10])
@@ -38,7 +38,7 @@ def calculateSeries():
     print("Divide Series1 by Series2:")
     ds = ds1 / ds2
     print(ds)
-
+# calculateSeries()
 
 def display_data_from_dictionary():
     exam_data = {
@@ -50,7 +50,7 @@ def display_data_from_dictionary():
 
     df = pd.DataFrame(exam_data, index=labels)
     print(df)
-
+# display_data_from_dictionary()
 
 def choose_row_more2():
     exam_data = {
@@ -76,7 +76,7 @@ def add_row():
     print(df)
 
 
-add_row()
+# add_row()
 
 
 def number_of_people_in_city():
@@ -86,7 +86,7 @@ def number_of_people_in_city():
                   'Georgia', 'Georgia', 'Los Angeles']})
     g1 = df1.groupby(["city"]).size().reset_index(name='Number of people')
     print(g1)
-
+# number_of_people_in_city()
 
 def size_diamand():
     diamonds = pd.read_csv('https://raw.githubusercontent.com/mwaskom/seaborn-data/master/diamonds.csv')
@@ -94,9 +94,9 @@ def size_diamand():
     print(diamonds.head())
     print("\nMultiply of length, width and depth for each cut:")
     print((diamonds.x * diamonds.y * diamonds.z).head())
-
-number_of_people_in_city()
-size_diamand()
+#
+# number_of_people_in_city()
+# size_diamand()
 
 
 def row_from_column():
@@ -105,3 +105,4 @@ def row_from_column():
     print(diamonds.head())
     print("\nRows 2 through 5 and all columns :")
     print(diamonds.loc[0:2, :])
+row_from_column()
