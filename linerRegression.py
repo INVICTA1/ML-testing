@@ -22,15 +22,16 @@ price_data.index = pd.to_datetime(price_data['date'])#преобразует о�
 price_data = price_data.drop(['date'], axis = 1)#удаляем индексированный столбец
 print('first five lines of data \n',price_data.head())
 
-
+#rename column
 print("check the data types:\n",price_data.dtypes)
 new_column_names = {'exon_price':'exxon_price'}
 price_data = price_data.rename(columns = new_column_names)
 print('\n head auto renaming \n',price_data.head(),'\n')
 
-display(price_data.isna().any())#проверяем есть ли пропущенные значения (true-есть, false-нет)
-price_data = price_data.dropna()# удаляем все отсутствующие значения
-display(price_data.isna().any())
+print('пропущенные занчения \n',price_data.isna().any(),'\n')#проверяем есть ли пропущенные значения (true-есть, false-нет)
+#isna()-проверяет каждый элемент , any -возвращает False, если хотя бы один элемент в серии или вдоль оси Dataframe не является True или эквивалентным
+price_data = price_data.dropna()# удаляем все отсутствующие значения(параметры 0(по умолчанию) удаляет строки, 1-столбцы)
+print(price_data.isna().any())
 x = price_data['exxon_price']
 y = price_data['oil_price']
 # создаем диаграмму рассеяния.
@@ -40,43 +41,49 @@ plt.plot(x, y, 'o', color ='cadetblue', label = 'Daily Price')
 plt.title("Exxon Vs. Oil")
 plt.xlabel("Exxon Mobile")
 plt.ylabel("Oil")
-plt.legend()
-
+plt.legend()#нанести на оси данные
 plt.show()
-# измерим эту корреляцию
+
+# измерим  корреляцию
 price_data.corr()
-price_data.describe()# статистическая сводка
-#создаем гистограмму для
+
+price_data.describe()# статистическая сводка для описания набора данных
+#создаем гистограмму для каждого столбца данных
 price_data.hist(grid = False, color = 'cadetblue')
+plt.show()
 exxon_kurtosis = kurtosis(price_data['exxon_price'], fisher = True)
 oil_kurtosis = kurtosis(price_data['oil_price'], fisher = True)
 
+# вычисляем асимметрию
 exxon_skew = skew(price_data['exxon_price'])
 oil_skew = skew(price_data['oil_price'])
 
 display("Exxon Excess Kurtosis: {:.2}".format(exxon_kurtosis))
 display("Oil Excess Kurtosis: {:.2}".format(oil_kurtosis))
-
+#вычисляем асимметрию
 display("Exxon Skew: {:.2}".format(exxon_skew))
 display("Oil Skew: {:.2}".format(oil_skew))
 display('Exxon')
 display(stats.kurtosistest(price_data['exxon_price']))
 display('Oil')
 display(stats.kurtosistest(price_data['oil_price']))
+# выполнить тест перекоса
 
 display('Exxon')
 display(stats.skewtest(price_data['exxon_price']))
 display('Oil')
 display(stats.skewtest(price_data['oil_price']))
+# определить нашу входную переменную (X) и выходную переменную.
+
 Y = price_data.drop('oil_price', axis = 1)
 X = price_data[['oil_price']]
 
-# Split X and y into X_
+
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.30, random_state=1)
-# create a Linear Regression model object.
+# создать объект модели линейной регрессии
 regression_model = LinearRegression()
 
-# pass through the X_train & y_train data set.
+# пройти через набор данных X_train & y_train.
 regression_model.fit(X_train, y_train)
 intercept = regression_model.intercept_[0]
 coefficient = regression_model.coef_[0][0]
@@ -92,7 +99,7 @@ y_predict = regression_model.predict(X_test)
 y_predict[:5]
 X2 = sm.add_constant(X)
 
-# create a OLS model.
+# создать  a OLS модель.
 model = sm.OLS(Y, X2)
 
 # fit the data
@@ -100,12 +107,13 @@ est = model.fit()
 est.conf_int()
 
 est.pvalues
+# вычислить среднеквадратичную ошибку.
 model_mse = mean_squared_error(y_test, y_predict)
 
-# calculate the mean absolute error.
+# вычислить среднюю абсолютную ошибку.
 model_mae = mean_absolute_error(y_test, y_predict)
 
-# calulcate the root mean squared error
+# вычислить среднеквадратичную ошибку
 model_rmse =  math.sqrt(model_mse)
 
 # display the output
@@ -127,16 +135,16 @@ plt.ylabel("Exxon Mobile")
 plt.legend()
 plt.show()
 
-# The coefficients
+# Коэффициенты
 print('Oil coefficient:' + '\033[1m' + '{:.2}''\033[0m'.format(regression_model.coef_[0][0]))
 
-# The mean squared error
+# Среднеквадратичная ошибка
 print('Mean squared error: ' + '\033[1m' + '{:.4}''\033[0m'.format(model_mse))
 
-# The mean squared error
+# Среднеквадратичная ошибка
 print('Root Mean squared error: ' + '\033[1m' + '{:.4}''\033[0m'.format(math.sqrt(model_mse)))
 
-# Explained variance score: 1 is perfect prediction
+# Объясненная оценка дисперсии: 1 - идеальное предсказание
 print('R2 score: '+ '\033[1m' + '{:.2}''\033[0m'.format(r2_score(y_test,y_predict)))
 
 with open('my_linear_regression.sav', 'wb') as f:
@@ -146,5 +154,5 @@ with open('my_linear_regression.sav', 'wb') as f:
 with open('my_linear_regression.sav', 'rb') as pickle_file:
     regression_model_2 = pickle.load(pickle_file)
 
-# make a new prediction.
+# сделаем новый прогноз.
 regression_model_2.predict([[67.33]])
